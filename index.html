@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Image with Hex Textbox</title>
+    <title>Draggable Textboxes Around Center</title>
     <style>
         body, html {
             margin: 0;
@@ -12,6 +12,7 @@
             align-items: center;
             justify-content: center;
             background-color: black;
+            overflow: hidden;
         }
 
         .image-container img {
@@ -23,22 +24,20 @@
 
         .textbox {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px; /* Set manually */
+            width: 300px;
             height: 200px;
             overflow-y: scroll;
-            overflow-x: hidden; /* Disable horizontal scrolling */
-            border: 2px solid rgba(0, 255, 0, 0.2); /* 80% transparent border */
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            color: #00ff00; /* Green text */
+            overflow-x: hidden;
+            border: 2px solid rgba(0, 255, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #00ff00;
             font-family: monospace;
             font-size: 8px;
             padding: 10px;
             box-sizing: border-box;
-            white-space: normal; /* Allow wrapping */
-            word-break: break-all; /* Ensure long text breaks and wraps */
+            white-space: normal;
+            word-break: break-all;
+            cursor: move;
         }
 
         /* Scrollbar styling */
@@ -63,10 +62,44 @@
 </head>
 <body>
     <div class="image-container">
-        <img src="1ascii.jpg" alt="Centered ASCII Image">
+        <img src="http://127.0.0.1:5500/backgrounds/1ascii.jpg" alt="Centered ASCII Image">
     </div>
-    <div class="textbox">
-        0x5a4150277320486f6d6520426173653a2057652077696c6c206e6f7420746f6c65726174652066616b652070656f706c6520686572652e20497420697320616c6c2061626f7574206272696e67696e67207265616c2070656f706c652077686f20646f6e2774206869646520626568696e6420612066616b65206d61736b2e2057652073746179207472756520746f206f757273656c76657320616e6420646f6e2774206e65656420746f20737465616c2066726f6d206f746865727320746f2070726574656e6420746f20626520736f6d656f6e6520656c73652e
+    <div class="textbox" id="center-textbox">
+        0x5a415020277320486f6d6520426173653a2057652077696c6c206e6f7420746f6c65726174652066616b652070656f706c6520686572652e20497420697320616c6c2061626f7574206272696e67696e67207265616c2070656f706c652077686f20646f6e2774206869646520626568696e6420612066616b65206d61736b2e
     </div>
+
+    <!-- Additional floating textboxes -->
+    <div class="textbox" style="top: 10%; left: 10%;"></div>
+    <div class="textbox" style="top: 10%; right: 10%;"></div>
+    <div class="textbox" style="bottom: 10%; left: 10%;"></div>
+    <div class="textbox" style="bottom: 10%; right: 10%;"></div>
+    <div class="textbox" style="top: 50%; left: 5%; transform: translateY(-50%);"></div>
+    <div class="textbox" style="top: 50%; right: 5%; transform: translateY(-50%);"></div>
+    <div class="textbox" style="top: 5%; left: 50%; transform: translateX(-50%);"></div>
+    <div class="textbox" style="bottom: 5%; left: 50%; transform: translateX(-50%);"></div>
+
+    <script>
+        // Make elements draggable
+        document.querySelectorAll('.textbox').forEach(textbox => {
+            textbox.addEventListener('mousedown', function(e) {
+                e.preventDefault(); // Prevent any default behavior
+                let offsetX = e.clientX - textbox.getBoundingClientRect().left;
+                let offsetY = e.clientY - textbox.getBoundingClientRect().top;
+
+                function mouseMoveHandler(e) {
+                    textbox.style.left = `${e.clientX - offsetX}px`;
+                    textbox.style.top = `${e.clientY - offsetY}px`;
+                }
+
+                function mouseUpHandler() {
+                    document.removeEventListener('mousemove', mouseMoveHandler);
+                    document.removeEventListener('mouseup', mouseUpHandler);
+                }
+
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+            });
+        });
+    </script>
 </body>
 </html>
