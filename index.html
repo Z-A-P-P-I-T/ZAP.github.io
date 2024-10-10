@@ -24,9 +24,9 @@
 
         .textbox {
             position: absolute;
-            width: 80%; /* Adjusted for mobile screens */
+            width: 80%;
             max-width: 300px;
-            height: 150px; /* Reduced height for smaller screens */
+            height: 150px;
             border: 2px solid rgba(0, 255, 0, 0.2);
             background-color: rgba(0, 0, 0, 0.5);
             color: #00ff00;
@@ -67,6 +67,24 @@
             height: 100px;
         }
 
+        .content video-container {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 100px;
+            background-color: rgba(0, 0, 0, 0.5); /* Transparency for the video container */
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .content video {
+            width: 100%; /* Make video responsive */
+            height: auto;
+            max-height: 100%; /* Ensure it fits within the container */
+            border-radius: 5px;
+        }
+
+        /* Scrollbar styling */
         .content::-webkit-scrollbar {
             width: 8px;
         }
@@ -90,6 +108,7 @@
         <img src="1ascii.jpg" alt="Centered ASCII Image">
     </div>
 
+    <!-- Main textbox -->
     <div class="textbox" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" id="mainTextbox">
         <div class="title-bar">
             Main Textbox <span class="minimize-button">▼</span>
@@ -104,7 +123,7 @@
         const hexValues = [
             { title: "Textbox 1", content: "0x46616b652070656f706c65206e65656420746f206869646520626568696e6420612066616b65206d61736b" },
             { title: "Textbox 2", content: "0x4265696e67207265616c206d65616e732073746179696e67207472756520746f206f6e6573656c66" },
-            { title: "Textbox 3", content: "0x4e6f6e652063616e20686964652077686f20746865792061726520696e73696465" },
+            { title: "Hax. Philips SmartHome LightBulp", content: '<div class="video-container"><video controls><source src="philips_smarthome_lightbulps_zap.mp4" type="video/mp4">Your browser does not support the video tag.</video></div>' },
             { title: "Textbox 4", content: "0x4672656520746f206c69766520696e20746865697220747275746820776974686f757420636f6e6365616c696e67" },
             { title: "Textbox 5", content: "0x43686f6f736520796f757220706174682077697468207265737065637420616e6420686f6e65737479" },
             { title: "Textbox 6", content: "0x486f6e65737479206973207768617420696d706f7274616e7420616e64207265616c" },
@@ -157,28 +176,6 @@
                 };
             };
 
-            titleBar.ontouchstart = function(event) {
-                event.preventDefault();
-                let shiftX = event.touches[0].clientX - textbox.getBoundingClientRect().left;
-                let shiftY = event.touches[0].clientY - textbox.getBoundingClientRect().top;
-
-                function moveAt(pageX, pageY) {
-                    textbox.style.left = pageX - shiftX + 'px';
-                    textbox.style.top = pageY - shiftY + 'px';
-                }
-
-                function onTouchMove(event) {
-                    moveAt(event.touches[0].clientX, event.touches[0].clientY);
-                }
-
-                document.addEventListener('touchmove', onTouchMove);
-
-                document.ontouchend = function() {
-                    document.removeEventListener('touchmove', onTouchMove);
-                    document.ontouchend = null;
-                };
-            };
-
             titleBar.ondragstart = function() {
                 return false;
             };
@@ -206,11 +203,11 @@
 
                 const content = document.createElement('div');
                 content.classList.add('content');
-                content.textContent = item.content;
+                content.innerHTML = item.content;
                 textbox.appendChild(content);
 
-                const xOffset = Math.random() * 400 - 200;
-                const yOffset = Math.random() * 400 - 200;
+                const xOffset = Math.random() * 600 - 300;
+                const yOffset = Math.random() * 600 - 300;
                 textbox.style.top = `calc(50% + ${yOffset}px)`;
                 textbox.style.left = `calc(50% + ${xOffset}px)`;
 
