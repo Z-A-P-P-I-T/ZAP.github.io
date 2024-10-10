@@ -12,29 +12,30 @@
             align-items: center;
             justify-content: center;
             background-color: black;
-            overflow: hidden; /* Prevents scrollbars from appearing */
+            overflow: hidden;
         }
 
         .image-container img {
             display: block;
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain; /* Ensures the image retains its aspect ratio */
+            object-fit: contain;
         }
 
         .textbox {
             position: absolute;
-            width: 300px; /* Set manually */
-            height: 200px;
-            border: 2px solid rgba(0, 255, 0, 0.2); /* 80% transparent border */
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            color: #00ff00; /* Green text */
+            width: 80%; /* Adjusted for mobile screens */
+            max-width: 300px;
+            height: 150px; /* Reduced height for smaller screens */
+            border: 2px solid rgba(0, 255, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #00ff00;
             font-family: monospace;
             font-size: 8px;
             box-sizing: border-box;
-            white-space: normal; /* Allow wrapping */
-            word-break: break-all; /* Ensure long text breaks and wraps */
-            overflow: hidden; /* Hidden initially */
+            white-space: normal;
+            word-break: break-all;
+            overflow: hidden;
         }
 
         .title-bar {
@@ -44,7 +45,7 @@
             cursor: move;
             font-size: 10px;
             font-family: monospace;
-            font-weight: bold; /* Make the title bold */
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -52,21 +53,20 @@
 
         .minimize-button {
             cursor: pointer;
-            color: rgba(0, 255, 0, 0.7); /* Transparent green for the minimize arrow */
+            color: rgba(0, 255, 0, 0.7);
         }
 
         .separator {
-            border-top: 1px solid rgba(0, 255, 0, 0.2); /* Match transparency with the border */
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
             margin-top: 2px;
         }
 
         .content {
             padding: 10px;
             overflow-y: scroll;
-            height: 130px; /* Adjusted height to fit under the separator */
+            height: 100px;
         }
 
-        /* Scrollbar styling */
         .content::-webkit-scrollbar {
             width: 8px;
         }
@@ -79,7 +79,6 @@
             background: rgba(0, 255, 0, 0.3);
         }
 
-        /* For Firefox */
         .content {
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 255, 0, 0.3) rgba(0, 0, 0, 0.2);
@@ -91,7 +90,6 @@
         <img src="1ascii.jpg" alt="Centered ASCII Image">
     </div>
 
-    <!-- Main textbox -->
     <div class="textbox" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" id="mainTextbox">
         <div class="title-bar">
             Main Textbox <span class="minimize-button">▼</span>
@@ -123,12 +121,12 @@
                 if (content.style.display === 'none') {
                     content.style.display = 'block';
                     separator.style.display = 'block';
-                    textbox.style.height = '200px';
+                    textbox.style.height = '150px';
                     minimizeButton.textContent = '▼';
                 } else {
                     content.style.display = 'none';
                     separator.style.display = 'none';
-                    textbox.style.height = '26px'; /* Height matches the title bar and separator */
+                    textbox.style.height = '26px';
                     minimizeButton.textContent = '▲';
                 }
             };
@@ -156,6 +154,28 @@
                 document.onmouseup = function() {
                     document.removeEventListener('mousemove', onMouseMove);
                     document.onmouseup = null;
+                };
+            };
+
+            titleBar.ontouchstart = function(event) {
+                event.preventDefault();
+                let shiftX = event.touches[0].clientX - textbox.getBoundingClientRect().left;
+                let shiftY = event.touches[0].clientY - textbox.getBoundingClientRect().top;
+
+                function moveAt(pageX, pageY) {
+                    textbox.style.left = pageX - shiftX + 'px';
+                    textbox.style.top = pageY - shiftY + 'px';
+                }
+
+                function onTouchMove(event) {
+                    moveAt(event.touches[0].clientX, event.touches[0].clientY);
+                }
+
+                document.addEventListener('touchmove', onTouchMove);
+
+                document.ontouchend = function() {
+                    document.removeEventListener('touchmove', onTouchMove);
+                    document.ontouchend = null;
                 };
             };
 
@@ -189,9 +209,8 @@
                 content.textContent = item.content;
                 textbox.appendChild(content);
 
-                // Randomize positions around the center, with more separation
-                const xOffset = Math.random() * 600 - 300;
-                const yOffset = Math.random() * 600 - 300;
+                const xOffset = Math.random() * 400 - 200;
+                const yOffset = Math.random() * 400 - 200;
                 textbox.style.top = `calc(50% + ${yOffset}px)`;
                 textbox.style.left = `calc(50% + ${xOffset}px)`;
 
@@ -202,12 +221,10 @@
             });
         }
 
-        // Apply functionality to the main textbox
         const mainTextbox = document.getElementById('mainTextbox');
         addMinimizeFunctionality(mainTextbox);
         makeTextboxDraggable(mainTextbox);
 
-        // Create other textboxes
         createTextboxes();
     </script>
 </body>
